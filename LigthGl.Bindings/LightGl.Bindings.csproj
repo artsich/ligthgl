@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <Target Name="BuildNativeLibraries" AfterTargets="Build">
+    <PropertyGroup>
+      <NativeProjectName>LightGl.Native</NativeProjectName>
+      <NativeLibsDir>$(OutputPath)Libs\$(NativeProjectName)</NativeLibsDir>
+    </PropertyGroup>
+    <Exec Command="powershell -ExecutionPolicy Bypass -File &quot;$(SolutionDir)\$(NativeProjectName)\build-native.ps1&quot; -configuration $(Configuration) -outputPath &quot;$(NativeLibsDir)&quot;" />
+    <Message Text="Native libraries built and copied to $(NativeLibsDir)" Importance="high" />
+  </Target>
+
+</Project>
