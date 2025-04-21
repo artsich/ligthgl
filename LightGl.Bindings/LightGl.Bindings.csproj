@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <Target Name="BuildNativeLibraries" AfterTargets="Build">
+    <PropertyGroup>
+      <NativeProjectName>LightGl.Native</NativeProjectName>
+    </PropertyGroup>
+    <!--Fix-it: output files mannually copied to desktop example-->
+    <Exec Command="powershell -ExecutionPolicy Bypass -File &quot;$(SolutionDir)$(NativeProjectName)\build-desktop.ps1&quot; -configuration $(Configuration) -outputPath $(OutputPath)" />
+    <Exec Command="powershell -ExecutionPolicy Bypass -File &quot;$(SolutionDir)$(NativeProjectName)\build-web.ps1&quot; -configuration $(Configuration)" />
+  </Target>
+</Project>

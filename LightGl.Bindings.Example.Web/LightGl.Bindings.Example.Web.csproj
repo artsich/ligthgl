@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+    <!-- TODO: not sure if this is needed
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <EnableAggressiveTrimming>true</EnableAggressiveTrimming>
+    <PublishTrimmed>true</PublishTrimmed>
+    <TrimMode>full</TrimMode>
+    <RunAOTCompilation>true</RunAOTCompilation>
+    <WasmBuildNative>true</WasmBuildNative>
+    <WasmNativeStrip>true</WasmNativeStrip>-->
+
+    <WasmEmitSymbolMap>true</WasmEmitSymbolMap>
+    <WasmAllowUndefinedSymbols>true</WasmAllowUndefinedSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LightGl.Bindings\LightGl.Bindings.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <NativeFileReference Include="..\LightGl.Native\out\web\$(Configuration)\lib\lightgl.a" />
+  </ItemGroup>
+
+  <Choose>
+    <When Condition=" $(Configuration) == 'Debug' ">
+      <PropertyGroup>
+        <EmccFlags>-g3</EmccFlags>
+        <EmccFlags>-sUSE_GLFW=3 -sUSE_WEBGPU=1 -sWASM=1 -sVERBOSE=1 -Wbad-function-cast -Wcast-function-type -O2 -g3 -sINITIAL_MEMORY=128MB -sMAXIMUM_MEMORY=2048MB -sALLOW_MEMORY_GROWTH=1</EmccFlags>
+      </PropertyGroup>
+    </When>
+    <When Condition=" $(Configuration) == 'Release' ">
+      <PropertyGroup>
+        <EmccFlags>-s USE_GLFW=3 -sUSE_WEBGPU=1 -O3</EmccFlags>
+      </PropertyGroup>
+    </When>
+  </Choose>
+</Project>

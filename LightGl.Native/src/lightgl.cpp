@@ -1,9 +1,32 @@
 #include "lightgl.h"
+
+ #if defined(__EMSCRIPTEN__)
+     #include <webgpu/webgpu.h>
+     #include <emscripten/emscripten.h>
+     #include <emscripten/html5.h>
+ #else
 #include <webgpu/webgpu_cpp.h>
 #include <webgpu/webgpu_cpp_print.h>
-#include <iostream>
+#endif
 
-int print_adapter_info() {
+ #include <iostream>
+ #include <string>
+ #include <functional>
+
+int my_function(int x) {
+#if defined(__EMSCRIPTEN__)
+    std::cout << "Try to create wgpu instance!\n";
+
+    WGPUInstance instance = wgpuCreateInstance(nullptr);
+
+    if (instance) {
+        std::cout << "WebGPU Instance is created!\n";
+        wgpuInstanceRelease(instance);
+    } else {
+        std::cerr << "WebGPU Instance creating failed\n";
+        return EXIT_FAILURE;
+    }
+#else
     wgpu::InstanceDescriptor instanceDescriptor{};
     instanceDescriptor.capabilities.timedWaitAnyEnable = true;
     wgpu::Instance instance = wgpu::CreateInstance(&instanceDescriptor);
@@ -21,7 +44,7 @@ int print_adapter_info() {
             return;
         }
         *static_cast<wgpu::Adapter*>(userdata) = adapter;
-    };
+        };
 
     auto callbackMode = wgpu::CallbackMode::WaitAnyOnly;
     void* userdata = &adapter;
@@ -43,5 +66,6 @@ int print_adapter_info() {
     std::cout << "DeviceID: " << std::hex << info.deviceID << std::dec << "\n";
     std::cout << "Name: " << info.device << "\n";
     std::cout << "Driver description: " << info.description << "\n";
+#endif
     return EXIT_SUCCESS;
 }

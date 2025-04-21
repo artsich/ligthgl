@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "LightGl.Bindings.Example.Web": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:52588;http://localhost:52589"
+    }
+  }
+}

@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightGl.Bindings", "LigthGl.Bindings\LightGl.Bindings.csproj", "{88378A7F-72C5-44D7-85FF-83CF4000C660}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightGl.Bindings", "LightGl.Bindings\LightGl.Bindings.csproj", "{88378A7F-72C5-44D7-85FF-83CF4000C660}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightGl.Bindings.Example.Web", "LightGl.Bindings.Example.Web\LightGl.Bindings.Example.Web.csproj", "{DA551D2C-2E36-4757-BD09-406EAE1A6370}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightGl.Bindings.Example.Desktop", "LightGl.Bindings.Example.Desktop\LightGl.Bindings.Example.Desktop.csproj", "{7DEFA75C-33E5-4253-A966-C1850A0F96BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{88378A7F-72C5-44D7-85FF-83CF4000C660}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88378A7F-72C5-44D7-85FF-83CF4000C660}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{88378A7F-72C5-44D7-85FF-83CF4000C660}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA551D2C-2E36-4757-BD09-406EAE1A6370}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA551D2C-2E36-4757-BD09-406EAE1A6370}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA551D2C-2E36-4757-BD09-406EAE1A6370}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA551D2C-2E36-4757-BD09-406EAE1A6370}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7DEFA75C-33E5-4253-A966-C1850A0F96BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DEFA75C-33E5-4253-A966-C1850A0F96BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DEFA75C-33E5-4253-A966-C1850A0F96BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DEFA75C-33E5-4253-A966-C1850A0F96BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
