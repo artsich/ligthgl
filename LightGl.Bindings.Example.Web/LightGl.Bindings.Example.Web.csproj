@@ -24,8 +24,9 @@
     <ProjectReference Include="..\LightGl.Bindings\LightGl.Bindings.csproj" />
   </ItemGroup>
 
+  <!--TODO: Fix this-->
   <ItemGroup>
-    <NativeFileReference Include="..\LightGl.Native\out\web\$(Configuration)\lib\lightgl.a" />
+    <NativeFileReference Include="..\LightGl.Bindings\$(OutputPath)lightgl.a" />
   </ItemGroup>
 
   <Choose>
