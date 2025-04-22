@@ -3,5 +3,6 @@
 # Prerequisites
 
 1) Build and install Dawn - https://github.com/google/dawn/blob/main/docs/quickstart-cmake.md#build-and-install-dawn-with-cmake
-
-2) install emsdk 3.1.56 (lattest is not support by Microsoft.NET.Sdk.WebAssembly for .net 9.0)
+2) Install emsdk 3.1.56 (Microsoft.NET.Sdk.WebAssembly does not support the latest for .NET 9.)
+3) CMake
+4) .NET 9.0
