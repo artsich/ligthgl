@@ -1,4 +1,4 @@
-﻿using LightGl.Bindings;
+using LightGl.Bindings;
 using System.Runtime.InteropServices.JavaScript;
 
 namespace LightGl;
@@ -15,6 +15,6 @@ public partial class Application
 		Console.WriteLine("Hello from c#");
 		Console.WriteLine("Try call light gl");
 
-		Console.WriteLine("The result of c++ 33 * 2 = " + WebGpuNative.my_function(33));
+		//Console.WriteLine("The result of c++ 33 * 2 = " + WebGpuNative.my_function(33));
 	}
 }

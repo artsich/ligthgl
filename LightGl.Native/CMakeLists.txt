@@ -37,4 +37,15 @@ else()
             $<TARGET_FILE:dawn::webgpu_dawn>
             $<TARGET_FILE_DIR:lightgl>
     )
+    
+    add_executable(sandbox
+        src/sandbox.cpp
+    )
+    set_target_properties(sandbox PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY $<TARGET_FILE_DIR:lightgl>
+    )
+    target_include_directories(sandbox PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+    )
+    target_link_libraries(sandbox PRIVATE lightgl)
 endif()

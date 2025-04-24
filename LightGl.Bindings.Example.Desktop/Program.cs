@@ -1,5 +1,5 @@
-﻿using LightGl.Bindings;
+using LightGl.Bindings;
 
-Console.WriteLine("Hello, World!");
+_ = WebGpuNative.light_gl_init();
 
-Console.WriteLine("Native returned - " + WebGpuNative.my_function(1));
+_ = WebGpuNative.light_gl_destroy();

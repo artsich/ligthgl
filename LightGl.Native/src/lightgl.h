@@ -10,5 +10,6 @@
 #endif
 
 extern "C" {
-    LIGHT_GL_API int my_function(int v);
+    LIGHT_GL_API int light_gl_init();
+    LIGHT_GL_API int light_gl_destroy();
 } 

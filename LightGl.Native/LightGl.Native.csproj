@@ -1,80 +1,65 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>Library</OutputType>
-    <TargetFramework>net9.0</TargetFramework>
-    <EmSdk>3.1.56</EmSdk>
-    <CMakeSourceDir>$(MSBuildProjectDirectory)</CMakeSourceDir>
-    <CMakeBuildDir>$(MSBuildProjectDirectory)\obj\$(Configuration)</CMakeBuildDir>
-    <CMakeWebBuildDir>$(MSBuildProjectDirectory)\obj\web\$(Configuration)</CMakeWebBuildDir>
-    <CMakeConfiguration>$(Configuration)</CMakeConfiguration>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>Library</OutputType>
+		<TargetFramework>net9.0</TargetFramework>
+		<EmSdk>3.1.56</EmSdk>
+		<CMakeSourceDir>$(MSBuildProjectDirectory)</CMakeSourceDir>
+		<CMakeBuildDir>$(MSBuildProjectDirectory)\obj\$(Configuration)</CMakeBuildDir>
+		<CMakeWebBuildDir>$(MSBuildProjectDirectory)\obj\web\$(Configuration)</CMakeWebBuildDir>
+		<CMakeConfiguration>$(Configuration)</CMakeConfiguration>
+		<WebBuildEnabled>False</WebBuildEnabled>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Include="CMakeLists.txt" />
-    <None Include="src\**\*" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="CMakeLists.txt" />
+		<None Include="src\**\*" />
+	</ItemGroup>
 
-  <Target Name="CMake_Configure" BeforeTargets="Build">
-    <Message Text="Configuring CMake in $(CMakeBuildDir)" Importance="high" />
-    <MakeDir Directories="$(CMakeBuildDir)" />
-    <Exec Command="cmake -S $(CMakeSourceDir) -B $(CMakeBuildDir) -DCMAKE_BUILD_TYPE=$(CMakeConfiguration)" />
-  </Target>
+	<Target Name="CMake_Configure_And_Build" BeforeTargets="Build">
+		<Message Text="Configuring CMake in $(CMakeBuildDir)" Importance="high" />
+		<MakeDir Directories="$(CMakeBuildDir)" />
+		<Exec Command="cmake -S $(CMakeSourceDir) -B $(CMakeBuildDir) -DCMAKE_BUILD_TYPE=$(CMakeConfiguration)" />
+		<Message Text="Building CMake project in $(CMakeBuildDir)" Importance="high" />
+		<Exec Command="cmake --build $(CMakeBuildDir) --config $(CMakeConfiguration)" />
+	</Target>
 
-  <Target Name="CMake_Build" DependsOnTargets="CMake_Configure" BeforeTargets="Build">
-    <Message Text="Building CMake project in $(CMakeBuildDir)" Importance="high" />
-    <Exec Command="cmake --build $(CMakeBuildDir) --config $(CMakeConfiguration)" />
-  </Target>
+	<Target Name="CMake_CopyOutputs" AfterTargets="CMake_Configure_And_Build">
+		<ItemGroup>
+			<NativeArtifacts Include="$(CMakeBuildDir)\$(CMakeConfiguration)\**\*.*" />
+		</ItemGroup>
+		<Copy SourceFiles="@(NativeArtifacts)" DestinationFiles="@(NativeArtifacts->'$(OutputPath)%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
 
-  <Target Name="CMake_Web_Configure" BeforeTargets="Build">
-    <Message Text="Building EmCmake project in $(CMakeBuildDir)" Importance="high" />
-    <PropertyGroup>
-      <IsWindows Condition="'$(OS)' == 'Windows_NT'">true</IsWindows>
-      <EmsdkEnvCmd Condition="'$(IsWindows)' == 'true'">call emsdk activate $(EmSdk)</EmsdkEnvCmd>
-      <EmCmakeCommand>$(EmsdkEnvCmd) &amp;&amp; emcmake</EmCmakeCommand>
-    </PropertyGroup>
-    <Exec Command="$(EmCmakeCommand) cmake -S $(CMakeSourceDir) -B $(CMakeWebBuildDir) -DCMAKE_BUILD_TYPE=$(CMakeConfiguration)" />
-  </Target>
+		<Message Text="Native artifacts: @(NativeArtifacts->'%(Identity)')" Importance="high" />
+	</Target>
 
-  <Target Name="CMake_Web_Build" DependsOnTargets="CMake_Web_Configure" BeforeTargets="Build">
-    <Message Text="Building EmCmake project in $(CMakeWebBuildDir)" Importance="high" />
-    <Exec Command="cmake --build $(CMakeWebBuildDir) --config $(CMakeConfiguration) -j4" />
-  </Target>
+	<Target Condition="'$(WebBuildEnabled)' == 'True'" Name="CMake_Web_Configure" BeforeTargets="Build">
+		<Message Text="Building EmCmake project in $(CMakeBuildDir)" Importance="high" />
+		<PropertyGroup>
+			<IsWindows Condition="'$(OS)' == 'Windows_NT'">true</IsWindows>
+			<EmsdkEnvCmd Condition="'$(IsWindows)' == 'true'">call emsdk activate $(EmSdk)</EmsdkEnvCmd>
+			<EmCmakeCommand>$(EmsdkEnvCmd) &amp;&amp; emcmake</EmCmakeCommand>
+		</PropertyGroup>
+		<Exec Command="$(EmCmakeCommand) cmake -S $(CMakeSourceDir) -B $(CMakeWebBuildDir) -DCMAKE_BUILD_TYPE=$(CMakeConfiguration)" />
+	</Target>
 
-  <Target Name="CMake_CopyOutputs" AfterTargets="CMake_Build">
-    <ItemGroup>
-      <NativeArtifacts Include="$(CMakeBuildDir)\$(CMakeConfiguration)\**\*.*" />
-    </ItemGroup>
-    <Copy SourceFiles="@(NativeArtifacts)" DestinationFiles="@(NativeArtifacts->'$(OutputPath)%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+	<Target Condition="'$(WebBuildEnabled)' == 'True'" Name="CMake_Web_Build" DependsOnTargets="CMake_Web_Configure" BeforeTargets="Build">
+		<Message Text="Building EmCmake project in $(CMakeWebBuildDir)" Importance="high" />
+		<Exec Command="cmake --build $(CMakeWebBuildDir) --config $(CMakeConfiguration) -j4" />
+	</Target>
 
-    <Message Text="Native artifacts: @(NativeArtifacts->'%(Identity)')" Importance="high" />
-  </Target>
+	<Target Condition="'$(WebBuildEnabled)' == 'True'" Name="CMake_Web_CopyOutputs" AfterTargets="CMake_Web_Build">
+		<ItemGroup>
+			<WebArtifacts Include="$(CMakeWebBuildDir)\**\*.a" />
+		</ItemGroup>
+		<Copy SourceFiles="@(WebArtifacts)" DestinationFiles="@(WebArtifacts->'$(OutputPath)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
 
-  <Target Name="CMake_Web_CopyOutputs" AfterTargets="CMake_Web_Build">
-    <ItemGroup>
-      <WebArtifacts Include="$(CMakeWebBuildDir)\**\*.a" />
-    </ItemGroup>
-    <Copy SourceFiles="@(WebArtifacts)" DestinationFiles="@(WebArtifacts->'$(OutputPath)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
-    
-    <Message Text="Web artifacts: @(WebArtifacts->'%(Identity)')" Importance="high" />
-  </Target>
+		<Message Text="Web artifacts: @(WebArtifacts->'%(Identity)')" Importance="high" />
+	</Target>
 
-  <ItemGroup>
-    <Content Include="$(OutputPath)**\*.*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
-    </Content>
-  </ItemGroup>
-
-  <!--<Target Name="GetTargetFrameworks">
-    <Output ItemName="TargetFrameworks" TaskParameter="ItemSpec" />
-  </Target>
-
-  <Target Name="GetTargetFrameworkProperties" DependsOnTargets="GetTargetFrameworks">
-    <ItemGroup>
-      <ProjectReferenceTargetFrameworks Include="net9.0">
-        <TargetFramework>net9.0</TargetFramework>
-        <IsCrossTargetingBuild>false</IsCrossTargetingBuild>
-      </ProjectReferenceTargetFrameworks>
-    </ItemGroup>
-  </Target>-->
+	<ItemGroup>
+		<Content Include="$(OutputPath)**\*.*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<TargetPath>%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
+		</Content>
+	</ItemGroup>
 </Project>
